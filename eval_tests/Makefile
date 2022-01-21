@@ -6,13 +6,15 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2021/12/18 21:15:46 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/02/03 21:25:12 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= gnl_tester
 BIN		= ./$(NAME)
-CFUNC	= get_next_line main
+CFUNC	= \
+get_next_line \
+main
 
 ROOT		= ../
 SRC_DIR		= ./

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ikarjala <ikarjala@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:45:37 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/01/21 17:48:00 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/03 21:23:07 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 int	get_next_line(const int fd, char **line)
 {
-    read(fd, *line, BUFF_SIZE);
-    return (RET_EOF);
+	static char	buf[BUFF_SIZE + 1];
+	size_t		bytes;
+
+	if (!fd)
+		return (RET_ERROR);
+	buf[BUFF_SIZE] = '\0';
+	bytes = read(fd, buf, BUFF_SIZE);
+	ft_strnstr(buf, "\n", BUFF_SIZE);
 }

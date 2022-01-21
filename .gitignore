@@ -1,0 +1,9 @@
+**
+!.gitignore
+!author
+!get_next_line.c
+!get_next_line.h
+!eval_tests
+!eval_tests/*.c.test
+!eval_tests/*.h.test
+!eval_tests/Makefile
