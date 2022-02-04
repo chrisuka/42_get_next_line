@@ -6,11 +6,11 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/02/03 21:25:12 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/02/04 01:13:17 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= gnl_tester
+NAME	= gnl_test
 BIN		= ./$(NAME)
 CFUNC	= \
 get_next_line \
@@ -22,7 +22,7 @@ OBJ_DIR		= ./
 SRC			= $(addprefix $(SRC_DIR),$(addsuffix .c,$(CFUNC)))
 OBJ			= $(addprefix $(OBJ_DIR),$(addsuffix .o,$(CFUNC)))
 INC_DIR		= ./
-LIB			=
+LIB			= ft
 FLAGS		= -Wall -Wextra -Werror -Wimplicit -Wconversion
 CC			= clang
 
@@ -37,7 +37,6 @@ fclean: clean
 	rm -f $(BIN) $(LIB)
 re: fclean all
 
-
-## UTILS -----
-git:
-	ln -f gitignore.linkme $(ROOT).gitignore
+install: all clean
+run: install
+	$(BIN)

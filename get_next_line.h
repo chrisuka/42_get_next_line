@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/03 21:23:34 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/04 01:57:58 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "libft.h"
 
 #define RET_READL	1
-#define RET_EOF	0
+#define RET_EOF		0
 #define RET_ERROR	-1
 
 #define BUFF_SIZE	32
