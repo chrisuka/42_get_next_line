@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:45:37 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/04 02:28:24 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/09 19:01:38 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,19 @@
 int	get_next_line(const int fd, char **line)
 {
 	static char	buf[BUFF_SIZE + 1];
-	char		*p_nl;
-	size_t		bytes;
+	size_t		i_nl;
+	ssize_t		bytes;
 
-	if (!fd)
+	if (!fd || !line)
 		return (RET_ERROR);
-	buf[BUFF_SIZE] = '\0';
-	bytes = read(fd, buf, BUFF_SIZE);
-	
-	p_nl = ft_strnstr(buf, "\n", BUFF_SIZE);
-	ft_memmove(*line, buf, p_nl - buf);
-
+	bytes = 0;
+	if (!buf[0])
+		bytes = read(fd, buf, BUFF_SIZE);
+	if (bytes == 0)
+		return (RET_EOF);
+	i_nl = (size_t)(ft_strnstr(buf, "\n", BUFF_SIZE) - buf);
+	if (*line)
+		free(*line);
+	*line = ft_strsub(buf, 0, i_nl);
+	return (RET_READL);
 }
-/*	LOGIC:
-**	read into buffer
-**
-**	should we allocate buffer in heap??
-**	allocate more space for buffer as we read more bytes than it can store..?
-**		maybe a linked list of buffers of size BUFF_SIZE ?!
-**
-**	then find index of first newline
-**	memmove substring of buf to output (line)
-**	memmove chunk after nl to start of buf (overwrite read chunk!)
-**	bzero / delete buffer when no more lines to write out
-*/

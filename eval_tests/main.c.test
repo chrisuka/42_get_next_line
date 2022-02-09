@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ikarjala <ikarjala@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 00:36:01 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/04 01:59:34 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/09 18:17:22 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int argc, const char **argv)
 	while (*++argv)
 	{
 		fd = open(*argv, O_RDONLY);
-		while (get_next_line(fd, &line, BUFF_SIZE) == RET_READL)
+		while (get_next_line(fd, &line) == RET_READL)
 			ft_putendl(line);
 		close(fd);
 	}
