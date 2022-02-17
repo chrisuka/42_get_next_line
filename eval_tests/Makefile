@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/02/09 18:27:33 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/02/17 11:32:40 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ CC			= clang
 all: $(NAME)
 $(NAME):
 	@echo '$(NAME) :: Starting build...'
-ifeq (,$(wildcard $(addprefix $(LIB_DIR),$(LIB))))
+ifeq (,$(wildcard $(addprefix $(LIB_DIR)/lib,$(addsuffix .a,$(LIB)))))
 	@echo '  ! No libraries found, trying to build...'
 	make -C $(LIB_DIR)
 endif
@@ -41,9 +41,8 @@ clean:
 	rm -f $(OBJ)
 fclean: clean
 	rm -f $(BIN) $(LIB)
-	make -C $(LIB_DIR) fclean
 re: fclean all
 
 install: all clean
 run: install
-	$(BIN)
+	$(BIN) test.txt

@@ -6,12 +6,11 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 00:36:01 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/10 18:39:17 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/17 11:44:29 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
-#include "libft.h"
 #include "get_next_line.h"
 
 int	main(int argc, const char **argv)
@@ -21,9 +20,7 @@ int	main(int argc, const char **argv)
 
 	if (argc < 2)
 		return (RET_ERROR);
-	line = (char *)malloc(BUFF_SIZE + 1);
-	if (!line)
-		return (RET_ERROR);
+	line = NULL;
 	while (*++argv)
 	{
 		fd = open(*argv, O_RDONLY);
