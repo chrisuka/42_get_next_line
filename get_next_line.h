@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/11 17:44:42 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/17 03:25:59 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #define RET_ERROR	-1
 
 #define BUFF_SIZE	256
+#define FD_MAX		5
 
 int	get_next_line(const int fd, char **line);
 
