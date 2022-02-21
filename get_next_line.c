@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:45:37 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/17 11:46:10 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/21 21:18:26 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,3 +52,7 @@ int	get_next_line(const int fd, char **line)
 	buf[tailbs] = 0;
 	return (RET_READL);
 }
+
+// TODO: t_list structure for buffers
+// content[BUFF_SIZE], bookmark
+// lst_to_str function (join all buffers into 1 str upon finding nl)
