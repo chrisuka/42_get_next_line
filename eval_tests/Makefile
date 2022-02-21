@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/02/17 11:32:40 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/02/21 18:24:39 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ LIB			= ft
 FLAGS		= -Wall -Wextra -Werror -Wimplicit -Wconversion
 CC			= clang
 
+## BUILD	====
 all: $(NAME)
 $(NAME):
 	@echo '$(NAME) :: Starting build...'
@@ -46,3 +47,8 @@ re: fclean all
 install: all clean
 run: install
 	$(BIN) test.txt
+
+## UTILS	====
+norme:
+	norminette -R CheckForbiddenSourceHeader \
+	$(wildcard $(ROOT)get_next_line.c $(ROOT)get_next_line.h)

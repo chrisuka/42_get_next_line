@@ -6,12 +6,14 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 00:36:01 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/17 13:27:35 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/02/21 17:48:04 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include "get_next_line.h"
+
+#define DEBUG_BUILD 1
 
 int	main(int argc, const char **argv)
 {
@@ -38,5 +40,8 @@ int	main(int argc, const char **argv)
 		close(fd);
 	}
 	ft_strdel(&line);
+#if DEBUG_BUILD
+	system("leaks gnl_test");
+#endif
 	return (0);
 }
