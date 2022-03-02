@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/21 20:48:47 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/03/02 20:48:57 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,15 @@
 # define RET_EOF	0
 # define RET_ERROR	-1
 
-# define BUFF_SIZE	256
+# define BUFF_SIZE	4
 # define FD_MAX		8192
+
+typedef struct	s_buffer
+{
+	t_list	*buf;
+	t_list	*tail;
+	size_t	i_nl;
+}				t_buffer;
 
 int	get_next_line(const int fd, char **line);
 
