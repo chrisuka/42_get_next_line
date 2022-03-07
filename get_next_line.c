@@ -15,16 +15,17 @@
 //DEBUG ===
 static void	print_mem(char *str, size_t len)
 {
+	#define PUTCHR(c) write(1, c, 1)
 	while (len-- > 0)
 	{
 		if (*str == 0)
-			write(1, "0", 1);
+			PUTCHR("0");
 		else if (*str == '\n')
-			write(1, "%%", 1);
+			PUTCHR("%%");
 		else if (ft_isprint(*str))
-			write(1, str, 1);
+			PUTCHR(str);
 		else
-			write(1, "?", 1);
+			PUTCHR("?");
 		str++;
 	}
 }
@@ -65,7 +66,6 @@ static char		*ft_lst_tostr(t_list *lst)
 	ft_putstr("allocated str size:  ");
 	ft_putnbr((int)len + 1);
 	write(1, "\n", 1);
-	ft_memset(str, '_', len);
 	// DEBUG =====
 	str[len] = 0;
 	len = 0;
@@ -85,7 +85,7 @@ static char		*ft_lst_tostr(t_list *lst)
 		ft_putendl("]");
 		// DEBUG =====
 
-		ft_memcpy(&(str[len]), lst->content, lst->content_size);
+		ft_memmove(&(str[len]), lst->content, lst->content_size);
 		//ft_memcpy
 		len += lst->content_size;
 		lst = lst->next;
@@ -151,10 +151,14 @@ int	get_next_line(const int fd, char **line)
 	if (!line || fd < 0 || !BUFF_SIZE)
 		return (RET_ERROR);
 	ft_strdel(line);
-	if (!bufs[fd].buf)
+	if (!bufs[fd].tail)
 	{
 		bufs[fd].buf = ft_lstinit(1, BUFF_SIZE);
 		bufs[fd].tail = bufs[fd].buf;
+
+		node = bufs[fd].tail;
+		rbytes = read(fd, node->content, BUFF_SIZE);
+		node->content_size = (size_t)rbytes;
 	}
 	node = bufs[fd].tail;
 
@@ -195,7 +199,11 @@ int	get_next_line(const int fd, char **line)
 	write(1, "\n", 1);
 	// DEBUG ======
 
+	node = bufs[fd].tail;//DEBUG
+	rbytes = (ssize_t)node->content_size; // DEBUG
+	node->content_size = bufs[fd].i_nl;//DEBUG
 	*line = ft_lst_tostr(bufs[fd].buf);
+	node->content_size = (size_t)rbytes; //DEBUG
 	ft_lstdel(&bufs[fd].buf, &lstrm);
 	if (!*line || !**line)
 	{
@@ -203,8 +211,11 @@ int	get_next_line(const int fd, char **line)
 		ft_lstdelone(&bufs[fd].tail, &lstrm); // already freed,  SEGV
 		return (RET_EOF);
 	}
+	bufs[fd].buf = bufs[fd].tail;
 	return (RET_READL);
 }
+
+// NOTE: ONLY copy up to i_nl bytes from the last buffer!
 
 // we need to preserve remainder after nl when clearing list
 //  we need to delete old buffers only up to the last one, exclusive
