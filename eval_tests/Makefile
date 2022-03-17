@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/02/21 18:24:39 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/03/15 16:33:01 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,9 +44,10 @@ fclean: clean
 	rm -f $(BIN) $(LIB)
 re: fclean all
 
-install: all clean
+install: re clean
 run: install
-	$(BIN) test.txt
+	@clear
+	$(BIN) testfiles/hello.txt
 
 ## UTILS	====
 norme:
