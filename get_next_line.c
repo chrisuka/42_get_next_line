@@ -14,7 +14,8 @@
 #include <stdio.h>// DEBUG
 
 
-#define DEBUG 1 //DEBUG
+#define DEBUG 0 //DEBUG
+#define VERBOSE 0 //DEBUG
 
 #define PUTCHR(c) write(1, c, 1) // DEBUG
 #if DEBUG
@@ -34,22 +35,30 @@ static void	print_mem(char *str, size_t len)
 		str++;
 	}
 }
-static char	*fmem(char *str)
+static char	*fmem(char *str, size_t len)
 {
+	char	*new;
 	char	*s;
 
 	if (!str)
 		return ("(null)");
-	s = str;
-	while (*s)
+	new = (char *)malloc(sizeof(char) * ft_strlen(str));
+	if (!new)
+		return ("(malloc fail)");
+	s = new;
+	new[len] = 0;
+	while (len-- > 0)
 	{
-		if (*s == '\n')
+		if (*str == '\n')
 			*s = '%';
-		else if (!ft_isprint(*s))
+		else if (!ft_isprint(*str))
 			*s = '?';
+		else
+			*s = *str;
 		s++;
+		str++;
 	}
-	return (str);
+	return (new);
 }
 //DEBUG ===
 #endif
@@ -58,12 +67,15 @@ static char	*fmem(char *str)
 // DEBUG =====
 static void		printbuf(t_list *buf)
 {
-	size_t i;
+	size_t	i;
+	char	*cont;
 
 	i = 0;
 	while (buf)
 	{
-		printf("[N%lu](%lu): '%s' -> ", i, buf->content_size, fmem((char *)buf->content));
+		cont = fmem((char *)buf->content, buf->content_size);
+		printf("[N%lu](%lu): '%s' -> ", i, buf->content_size, cont);
+		ft_strdel(&cont);
 		i++;
 		buf = buf->next;
 	}
@@ -109,6 +121,10 @@ static int		ft_lstcut(t_list **alst, size_t start, size_t count,
 	t_list	*temp;
 	size_t	index;
 
+#if DEBUG
+	char *cont;
+#endif
+
 	if (count == 0 || !alst)
 		return (-1);
 	head = *alst;
@@ -134,9 +150,9 @@ static int		ft_lstcut(t_list **alst, size_t start, size_t count,
 	{
 #if DEBUG
 		//DEBUG ======
-		ft_putstr("\tdeleting : \'");
-		print_mem(tail->content, tail->content_size);
-		ft_putendl("\'");
+		cont = fmem(tail->content, tail->content_size);
+		printf("\tdeleting [N%lu] : \'%s\'\n", index, cont);
+		ft_strdel(&cont);
 		// DEBUG ======
 #endif
 		temp = tail->next;
@@ -254,7 +270,7 @@ static size_t	ft_strni(const char *str, int c, size_t n)
 {
 	size_t	len;
 
-#if DEBUG
+#if DEBUG && VERBOSE >= 3
 	// DEBUG ====
 	ft_putendl("debug");
 /* 	if (!str || !*str)
@@ -300,6 +316,15 @@ int	get_next_line(const int fd, char **line)
 		node = bufs[fd].tail;
 		rbytes = read(fd, node->content, BUFF_SIZE);
 		node->content_size = (size_t)rbytes;
+#if DEBUG
+		// DEBUG ======
+		ft_putstr("read (");
+		ft_putnbr((int)rbytes);
+		ft_putstr(") bytes : \'");
+		print_mem(node->content, (size_t)rbytes);
+		ft_putendl("\' into HEAD");
+		// DEBUG ======
+#endif
 	}
 	node = bufs[fd].tail;
 #if DEBUG
@@ -311,12 +336,14 @@ int	get_next_line(const int fd, char **line)
 		ft_putendl("node content_size is zero");
 	else if (!bufs[fd].tail->content)
 		ft_putendl("node content is null");
+	#if VERBOSE >= 2
 	printf("buf is at  %p\ntail is at %p\n", bufs[fd].buf, bufs[fd].tail);
 	printf("current node count is  %lu\n", ft_lstclen(bufs[fd].buf, NULL)); // SEGV
 	// printbuf(bufs[fd].buf);
 	print_mem(node->content, node->content_size);
 	PUTCHR("\n");
 	// DEBUG ====
+	#endif
 #endif
 
 #if DEBUG
@@ -324,11 +351,11 @@ int	get_next_line(const int fd, char **line)
 #endif
 	loop: // ! NORME !
 
-#if DEBUG
+#if DEBUG && VERBOSE >= 3
 	ft_putendl("about to strni"); // DEBUG
 #endif
 	bufs[fd].i_nl = ft_strni(node->content, '\n', node->content_size);
-#if DEBUG
+#if DEBUG && VERBOSE >= 3
 	ft_putendl("strni success"); // DEBUG
 	//bufs[fd].i_nl = BUFF_SIZE; //DEBUG
 #endif
@@ -389,10 +416,9 @@ int	get_next_line(const int fd, char **line)
 	{
 #if DEBUG
 		ft_putendl("[[ LINE IS EMPTY ! ]]"); //DEBUG
-		ft_lstcut(&bufs[fd].buf, 0, -1UL, &lstrm);
-#else
-		ft_lstdel(&bufs[fd].buf, &lstrm);
 #endif
+		ft_lstcut(&bufs[fd].buf, 0, -1UL, &lstrm);
+		//ft_lstdel(&bufs[fd].buf, &lstrm);
 		return (RET_EOF);
 	}
 #if DEBUG
