@@ -14,7 +14,7 @@
 #include <stdio.h>// DEBUG
 
 
-#define DEBUG 0 //DEBUG
+#define DEBUG 1 //DEBUG
 
 #define PUTCHR(c) write(1, c, 1) // DEBUG
 #if DEBUG
@@ -281,7 +281,7 @@ int	get_next_line(const int fd, char **line)
 	static t_buffer	bufs[FD_MAX];
 	t_list			*node;
 	ssize_t			rbytes;
-	ssize_t			tmp;
+	size_t			tmp;
 
 #if DEBUG
 	PUTCHR("\n");
@@ -375,13 +375,13 @@ int	get_next_line(const int fd, char **line)
 
 	// hack node's content_size temporarily for lststr
 	node = bufs[fd].tail; // DEBUG
-	tmp = (ssize_t)node->content_size; // DEBUG
+	tmp = node->content_size; // DEBUG
 	node->content_size = bufs[fd].i_nl; // DEBUG
 
 	*line = ft_lststr(bufs[fd].buf);
 	// now return it to its real value
 
-	node->content_size = (size_t)tmp; //DEBUG
+	node->content_size = tmp; //DEBUG
 
 	// del all but last node
 	ft_lstcut(&bufs[fd].buf, 0, ft_lstclen(bufs[fd].buf, NULL) - 1, &lstrm);
@@ -426,17 +426,18 @@ int	get_next_line(const int fd, char **line)
 		PUTCHR("\n");
 		// DEBUG ======
 #endif
-
-		rbytes = read(fd, &node->content[bufs[fd].i_nl + 1], node->content_size - bufs[fd].i_nl - 1);
+		tmp = BUFF_SIZE - bufs[fd].i_nl - 1;
+		// FIXME: this index is wrong, we read on top of existing text!
+		rbytes = read(fd, &node->content[tmp], BUFF_SIZE - tmp);
 		// update content size of dup tail after reading into it
-		node->content_size = BUFF_SIZE - bufs[fd].i_nl + (size_t)rbytes - 1;
+		node->content_size = tmp + (size_t)rbytes;
 
 #if DEBUG
 		// DEBUG ======
 		ft_putstr("read (");
 		ft_putnbr((int)rbytes);
 		ft_putstr(") bytes : \'");
-		print_mem(&node->content[bufs[fd].i_nl + 1], node->content_size - bufs[fd].i_nl - 1);
+		print_mem(&node->content[tmp], (size_t)rbytes);
 		ft_putendl("\' into tail");
 		// DEBUG ======
 #endif
@@ -468,6 +469,8 @@ int	get_next_line(const int fd, char **line)
 // FIXME: reading multiple newlines into one buffer may cause destruction!
 
 // NOTE: something might be hecked up with the index calculations when filling out the rest of duped tail string
+//  |_ [yes]
+//    (it seems to sometimes read too many bytes into tail buffer after duplication)
 
 // NOTE: lstcut "just works" because if we are checking 0 (-1) elements it overflows to SIZE_T_MAX
 //		but we only iterate while not NULL, therefore we do not need the extra free before EOF
