@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/03/18 08:46:56 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/03/19 17:47:13 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,8 @@ LIB			= ft
 FLAGS		= -Wall -Wextra -Werror -Wimplicit -Wconversion
 CC			= clang
 
+42TEST		= 42filechecker
+
 ## BUILD	====
 all: $(NAME)
 $(NAME):
@@ -41,13 +43,16 @@ endif
 clean:
 	rm -f $(OBJ)
 fclean: clean
-	rm -f $(BIN) $(LIB)
+	rm -f $(BIN)
 re: fclean all
 
 install: re clean
 run: install
 	@clear
 	$(BIN) testfiles/hello.txt
+
+test: fclean
+	bash $(42TEST)
 
 ## UTILS	====
 norme:

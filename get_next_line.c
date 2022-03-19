@@ -11,80 +11,16 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>// DEBUG
-
 
 #define DEBUG	0 //DEBUG
-#define VERBOSE	0 //DEBUG
+#define VERBOSE	1 //DEBUG
 
-#define PUTCHR(c) write(1, c, 1) // DEBUG
-#if DEBUG
-//DEBUG ===
-static void	print_mem(char *str, size_t len)
-{
-	while (len-- > 0)
-	{
-		if (*str == 0)
-			PUTCHR("0");
-		else if (*str == '\n')
-			PUTCHR("%%");
-		else if (ft_isprint(*str))
-			PUTCHR(str);
-		else
-			PUTCHR("?");
-		str++;
-	}
-}
-static char	*fmem(char *str, size_t len)
-{
-	char	*new;
-	char	*s;
 
-	if (!str)
-		return ("(null)");
-	new = (char *)malloc(sizeof(char) * ft_strlen(str));
-	if (!new)
-		return ("(malloc fail)");
-	s = new;
-	new[len] = 0;
-	while (len-- > 0)
-	{
-		if (*str == '\n')
-			*s = '%';
-		else if (!ft_isprint(*str))
-			*s = '?';
-		else
-			*s = *str;
-		s++;
-		str++;
-	}
-	return (new);
-}
-//DEBUG ===
+#if DEBUG_G
+char *fmem(char *str, size_t size);
+void print_mem(char *str, size_t len);
+void printbuf(t_list *buf);
 #endif
-
-#if DEBUG
-// DEBUG =====
-static void		printbuf(t_list *buf)
-{
-	size_t	i;
-	char	*cont;
-
-	i = 0;
-	while (buf)
-	{
-		cont = fmem((char *)buf->content, buf->content_size);
-		printf("[N%lu](%lu): '%s' -> ", i, buf->content_size, cont);
-		ft_strdel(&cont);
-		i++;
-		buf = buf->next;
-	}
-	printf("[NULL]\n");
-}
-
-//DEBUG ===
-#endif
-
 
 static size_t	lst_contentlen(t_list *lst)
 {
@@ -145,13 +81,14 @@ static int		ft_lstcut(t_list **alst, size_t start, size_t count,
 	printf("cutting list...\n"); // DEBUG
 	printbuf(*alst);//DEBUG
 #endif
-	index = -1UL;
-	while (++index < count && tail)
+	//index = -1UL;
+	//while (++index < count && tail)
+	while (count-- > 0 && tail)
 	{
 #if DEBUG
 		//DEBUG ======
 		cont = fmem(tail->content, tail->content_size);
-		printf("\tdeleting [N%lu] : \'%s\'\n", index, cont);
+		printf("\tdeleting [N%lu] : \'%s\' %p\n", index++, cont, tail);
 		ft_strdel(&cont);
 		// DEBUG ======
 #endif
@@ -162,14 +99,11 @@ static int		ft_lstcut(t_list **alst, size_t start, size_t count,
 		tail = temp;
 	}
 #if DEBUG
-	printf("we cut (%lu) elements\n", index); //DEBUG
+	printf("we cut (%lu) elements\n", index - start); //DEBUG
 #endif
 	head->next = tail;
 	if (start == 0)
-	{
-		head = NULL;
 		*alst = tail;
-	}
 #if DEBUG
 	printbuf(*alst);//DEBUG
 #endif
@@ -239,8 +173,7 @@ static void		lstrm(void *node, size_t size)
 	if (!node)
 		return ;
 	ft_bzero(node, size);
-	ft_memdel(&node);
-	//free(node);
+	free(node);
 }
 
 static t_list	*ft_lstinit(size_t elemc, size_t size)
@@ -260,6 +193,7 @@ static t_list	*ft_lstinit(size_t elemc, size_t size)
 			ft_lstdel(&old, &lstrm);
 			return (NULL);
 		}
+		ft_bzero(node->content, size);
 		node->next = old;
 		old = node;
 	}
@@ -291,6 +225,64 @@ static size_t	ft_strni(const char *str, int c, size_t n)
 	}
 	return (len);
 }
+
+
+
+
+
+#if DEBUG && 0
+// DEBUG ====
+static void test_lst()
+{
+	t_list	*lst;
+	t_list	*node;
+	int		c;
+
+	lst = NULL;
+#if DEBUG && DEBUG_G
+	printf("initial list status:\n");
+	printbuf(lst);
+	printf("intializing a new list of 5 nodes of size %i\n", BUFF_SIZE);
+#endif
+
+	lst = ft_lstinit(5, BUFF_SIZE);
+
+	node = lst;
+	c = 0;
+	while (node)
+	{
+		ft_memset(node->content, c++ % 26 + 'a' , BUFF_SIZE);
+		node = node->next;
+	}
+#if DEBUG && DEBUG_G
+	printbuf(lst);
+	printf("cutting elements 1, 2 and 3\n");
+#endif
+
+	ft_lstcut(&lst, 1, 3, &lstrm);
+
+#if DEBUG && DEBUG_G
+	printf("post deletion:\n");
+	printbuf(lst);
+#endif
+#if DEBUG && DEBUG_G
+	printf("clearing list\n");
+#endif
+
+	ft_lstdel(&lst, &lstrm);
+
+#if DEBUG && DEBUG_G
+	printbuf(lst);
+	printf("lst testing complete.\n");
+#endif
+}
+// DEBUG ====
+#endif
+
+
+
+
+
 
 int	get_next_line(const int fd, char **line)
 {
@@ -327,7 +319,7 @@ int	get_next_line(const int fd, char **line)
 #endif
 	}
 	node = bufs[fd].tail;
-#if DEBUG
+#if DEBUG && VERBOSE >= 1
 	// DEBUG ====
 	ft_putendl("about to perform node checks");
 	if (!bufs[fd].tail)
@@ -369,13 +361,11 @@ int	get_next_line(const int fd, char **line)
 		printbuf(bufs[fd].buf);
 		// DEBUG ======
 #endif
-
 		node->next = ft_lstinit(1, BUFF_SIZE);
 		node = node->next;
 		bufs[fd].tail = node;
 		rbytes = read(fd, node->content, BUFF_SIZE);
 		node->content_size = (size_t)rbytes;
-
 #if DEBUG
 		// DEBUG ======
 		ft_putstr("read (");
@@ -417,8 +407,8 @@ int	get_next_line(const int fd, char **line)
 #if DEBUG
 		ft_putendl("[[ LINE IS EMPTY ! ]]"); //DEBUG
 #endif
-		ft_lstcut(&bufs[fd].buf, 0, -1UL, &lstrm);
-		//ft_lstdel(&bufs[fd].buf, &lstrm);
+		//ft_lstcut(&bufs[fd].buf, 0, -1UL, &lstrm);
+		ft_lstdel(&bufs[fd].buf, &lstrm); // SEGV HERE
 		return (RET_EOF);
 	}
 #if DEBUG
@@ -453,7 +443,6 @@ int	get_next_line(const int fd, char **line)
 		// DEBUG ======
 #endif
 		tmp = BUFF_SIZE - bufs[fd].i_nl - 1;
-		// FIXME: this index is wrong, we read on top of existing text!
 		rbytes = read(fd, &node->content[tmp], BUFF_SIZE - tmp);
 		// update content size of dup tail after reading into it
 		node->content_size = tmp + (size_t)rbytes;
@@ -464,34 +453,26 @@ int	get_next_line(const int fd, char **line)
 		ft_putnbr((int)rbytes);
 		ft_putstr(") bytes : \'");
 		print_mem(&node->content[tmp], (size_t)rbytes);
-		ft_putendl("\' into tail");
+		ft_putendl("\' into TAIL");
 		// DEBUG ======
 #endif
 	}
 	else
 		node = NULL;
 	ft_lstdelone(&bufs[fd].tail, &lstrm);
-#if 0
-	printf("address of node is  %p\nwith a size of (%lu)\n", node, node->content_size);
-	printf("before assignment address of tail is  %p\n", bufs[fd].tail);
-	printf("before assignment address of buf is  %p\n", bufs[fd].buf);
-#endif
-#if DEBUG && VERBOSE >= 3
-	ft_putendl("pre  assign"); //DEBUG
-#endif
 	bufs[fd].tail = node ? node : NULL;// NORME
 	bufs[fd].buf = bufs[fd].tail ? bufs[fd].tail : NULL; //NORME
-#if DEBUG && VERBOSE >= 3
-	ft_putendl("post assign"); //DEBUG
-	printbuf(bufs[fd].buf); // DEBUG
-#endif
 	return (RET_READL);
 }
+
+// TODO: use strchr, simplify conditional logic and get rid of hack-arounds to reduce likelihood of edge cases!
+
+// NOTE: we fixed 2 things: lstdel/lstdelone now set content pointer to NULL, lstrm now frees the content memory
+// |_,- we need to apply these changes to libft's repo
 
 // FIXME: multiple newlines in a row cause premature EOF!!
 // |- this is caused by a nl in index 0, it makes lststr think the content is empty and returns null line
 // |_,- how to fix: replace strni with strnchr and get its index another way, use nl == NULL for logic
-
 
 
 
