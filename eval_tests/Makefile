@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/03/19 17:47:13 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/03/21 20:30:36 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ OBJ			= $(addprefix $(OBJ_DIR),$(addsuffix .o,$(CFUNC)))
 INC_DIR		= $(LIB_DIR)
 LIB_DIR		= $(ROOT)libft
 LIB			= ft
-FLAGS		= -Wall -Wextra -Werror -Wimplicit -Wconversion
+FLAGS		= -Wall -Wextra -Werror -Wimplicit -Wconversion -ggdb
 CC			= clang
 
 42TEST		= 42filechecker

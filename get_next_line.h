@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/03/19 17:25:49 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/03/21 21:02:53 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,18 @@ typedef struct	s_buffer
 {
 	t_list	*buf;
 	t_list	*tail;
-	size_t	i_nl;
+	char	*nlp;
 }				t_buffer;
 
 int	get_next_line(const int fd, char **line);
 
 
-//DEBUG ===========================
+ // DEBUG ===
  #ifndef DEBUG_G
 	#define PUTCHR(c) write(1, c, 1) // DEBUG
 	#define DEBUG_G 1
 	#if DEBUG_G
+//DEBUG ===========================
 	static inline void	print_mem(char *str, size_t len)
 	{
 		while (len-- > 0)
@@ -61,12 +62,12 @@ int	get_next_line(const int fd, char **line);
 		char	*new;
 		char	*s;
 
-		if (!str)
+		if (!str || !size)
 			return (NULL);
 		new = (char *)malloc(sizeof(char) * size + 1);
 		if (!new)
 			return (NULL);
-		ft_memset(new, '0', size); //DEBUG
+		ft_memset(new, '0', size);
 		new[size] = 0;
 		s = new;
 		while (size-- > 0 && *str)
