@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/03/21 20:30:36 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/03/22 15:38:13 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,9 @@ fclean: clean
 	rm -f $(BIN)
 re: fclean all
 
+lib:
+	@echo '$(LIB_DIR)/$(LIB) :: Building libraries...'
+	make -C $(LIB_DIR) re
 install: re clean
 run: install
 	@clear

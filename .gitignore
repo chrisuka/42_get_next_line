@@ -7,3 +7,7 @@
 !eval_tests/*.c.test
 !eval_tests/*.h.test
 !eval_tests/Makefile
+!libft
+!libft/ft_*.c
+!libft/libft.h
+!libft/Makefile

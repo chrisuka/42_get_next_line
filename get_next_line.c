@@ -299,9 +299,8 @@ loop: // ! NORME !
 		node = node->next;
 		goto loop;
 	}
-	if (node->content_size == 0)
-		nli = 0;
-	else
+	nli = 0;
+	if (node->content_size > 0)
 		nli = (size_t)bufs[fd].nlp - (size_t)node->content;
 
 	// AFTER NEWLINE DUPLICATION HANDLING ------------------
@@ -340,11 +339,20 @@ loop: // ! NORME !
 	ft_lstdel(&bufs[fd].buf, &lstrm); // FIXME: SEGV on 10.txt
 
 	if (!*line && !tmp && !rbytes)
-		return (RET_EOF);
+	{
+		tmp = addbuffer(fd, BUFF_SIZE, &rbytes);
+		if (!rbytes)
+		{
+			ft_lstdelone(&tmp, &lstrm);
+			return (RET_EOF);
+		}
+	}
 	bufs[fd].tail = tmp;
 	return (RET_READL);
 }
 
-// TODO: change lstdel to use iteration instead of recursion to fix possible stack overflow issues
+// TODO: fix premature EOF on nlnl.txt
+// NOTE: don't forget to save new functions
+// NOTE: don't forget to commit libft changes
 // TODO: fix norme
 // TODO: submit !!
