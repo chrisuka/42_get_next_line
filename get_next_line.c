@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 19:50:25 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/03/30 17:46:38 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/03/30 22:28:02 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	get_next_line(const int fd, char **line)
 
 	if (!line || fd < 0 || !BUFF_SIZE || fd > FD_MAX)
 		return (RET_ERROR);
-	ft_strdel(line);
 	if (!bufs[fd].tail)
 		bufs[fd].tail = addbuffer(fd, BUFF_SIZE, &rbytes);
 	bufs[fd].buf = bufs[fd].tail;
@@ -74,5 +73,7 @@ int	get_next_line(const int fd, char **line)
 }
 
 // FIX norme in this file (get_next_line is over 25 lines long)
+
+// YOU FOOL REMOVE THE LICENSE and any other extra files FROM LIBFT OR YOU'RE TOAST!
 
 // TODO: submit !!
