@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 19:50:25 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/03/30 22:28:02 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/03/31 15:58:20by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ int	get_next_line(const int fd, char **line)
 		if (!rbytes)
 		{
 			ft_lstdelone(&tmp, &ft_memclr);
+			bufs[fd].tail = NULL;
 			return (RET_EOF);
 		}
 	}
@@ -73,6 +74,7 @@ int	get_next_line(const int fd, char **line)
 }
 
 // FIX norme in this file (get_next_line is over 25 lines long)
+// REMOVE DEBUG
 
 // YOU FOOL REMOVE THE LICENSE and any other extra files FROM LIBFT OR YOU'RE TOAST!
 

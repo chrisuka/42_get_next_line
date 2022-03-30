@@ -6,22 +6,22 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/03/22 15:38:13 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/03/30 22:11:36 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= gnl_test
 BIN		= ./$(NAME)
 CFUNC	= \
-get_next_line \
-main
+get_next_line
 
 ROOT		= ../
 SRC_DIR		= $(ROOT)
 OBJ_DIR		= ./
-SRC			= $(addprefix $(SRC_DIR),$(addsuffix .c,$(CFUNC)))
-OBJ			= $(addprefix $(OBJ_DIR),$(addsuffix .o,$(CFUNC)))
-INC_DIR		= $(LIB_DIR)
+INC_DIR		= $(ROOT) $(LIB_DIR)
+SRC			= $(addprefix $(SRC_DIR),$(addsuffix .c,$(CFUNC))) ./main.c
+OBJ			= $(addprefix $(OBJ_DIR),$(addsuffix .o,$(CFUNC))) ./main.o
+INC			= $(addprefix -I ,$(INC_DIR))
 LIB_DIR		= $(ROOT)libft
 LIB			= ft
 FLAGS		= -Wall -Wextra -Werror -Wimplicit -Wconversion -ggdb
@@ -37,7 +37,7 @@ ifeq (,$(wildcard $(addprefix $(LIB_DIR)/lib,$(addsuffix .a,$(LIB)))))
 	@echo '  ! No libraries found, trying to build...'
 	make -C $(LIB_DIR)
 endif
-	$(CC) -c $(FLAGS) $(SRC) -I $(INC_DIR)
+	$(CC) -c $(FLAGS) $(SRC) $(INC)
 	$(CC) -o $(BIN) $(OBJ) -L$(LIB_DIR) -l $(LIB)
 	@echo 'Build success!'
 clean:
@@ -49,15 +49,13 @@ re: fclean all
 lib:
 	@echo '$(LIB_DIR)/$(LIB) :: Building libraries...'
 	make -C $(LIB_DIR) re
-install: re clean
-run: install
+run: re clean
 	@clear
 	$(BIN) testfiles/hello.txt
 
 test: fclean
 	bash $(42TEST)
-
 ## UTILS	====
 norme:
 	norminette -R CheckForbiddenSourceHeader \
-	$(wildcard $(ROOT)get_next_line.c $(ROOT)get_next_line.h)
+	$(ROOT)get_next_line.c $(ROOT)get_next_line.h
