@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/03/23 19:51:31 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/03/31 22:52:25 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,8 @@
 typedef struct s_buffer
 {
 	t_list	*buf;
-	t_list	*tail;
-	char	*nlp;
-}				t_buffer;
+	t_bool	f_eof;
+}	t_buffer;
 
 int	get_next_line(const int fd, char **line);
 
