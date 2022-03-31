@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/23 19:50:25 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/03/31 15:58:20by ikarjala         ###   ########.fr       */
+/*   Created: 2022/03/31 18:45:23 by ikarjala          #+#    #+#             */
+/*   Updated: 2022/03/31 19:26:06 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,30 @@ static t_list	*addbuffer(int fd, size_t size, size_t *rbytes)
 	return (new);
 }
 
+static t_list	*dupremainder(t_list *node, void *nlp)
+{
+	size_t	nli;
+	t_list	*tmp;
+
+	nli = 0;
+	if (node->content_size > 0)
+		nli = (size_t)(nlp - node->content);
+	tmp = NULL;
+	if (nli + 1 < node->content_size)
+	{
+		tmp = ft_lstnew(&nlp[1], node->content_size - nli - 1);
+		ft_bzero(nlp, node->content_size - nli);
+	}
+	node->content_size = nli;
+	return (tmp);
+}
+
 int	get_next_line(const int fd, char **line)
 {
 	static t_buffer	bufs[FD_MAX];
 	t_list			*node;
 	t_list			*tmp;
 	size_t			rbytes;
-	size_t			nli;
 
 	if (!line || fd < 0 || !BUFF_SIZE || fd > FD_MAX)
 		return (RET_ERROR);
@@ -46,16 +63,7 @@ int	get_next_line(const int fd, char **line)
 		node = node->next;
 		bufs[fd].nlp = ft_memchr(node->content, '\n', node->content_size);
 	}
-	nli = 0;
-	if (node->content_size > 0)
-		nli = (size_t)bufs[fd].nlp - (size_t)node->content;
-	tmp = NULL;
-	if (nli + 1 < node->content_size)
-	{
-		tmp = ft_lstnew(&bufs[fd].nlp[1], node->content_size - nli - 1);
-		ft_bzero(bufs[fd].nlp, node->content_size - nli);
-	}
-	node->content_size = nli;
+	tmp = dupremainder(node, bufs[fd].nlp);
 	*line = ft_lststr(bufs[fd].buf);
 	bufs[fd].nlp = NULL;
 	ft_lstdel(&bufs[fd].buf, &ft_memclr);
