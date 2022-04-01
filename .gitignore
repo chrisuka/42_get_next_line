@@ -4,10 +4,12 @@
 !author
 !get_next_line.c
 !get_next_line.h
+
 !libft
 !libft/author
 !libft/ft_*.c
 !libft/libft.h
+!libft/Makefile
 
 !eval_tests
 !eval_tests/*.c.test
