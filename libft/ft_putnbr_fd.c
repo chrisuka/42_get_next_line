@@ -1,33 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 14:35:11 by ikarjala         ###   ########.fr       */
+/*   Created: 2022/03/25 19:05:20 by ikarjala          #+#    #+#             */
+/*   Updated: 2022/03/29 18:08:39 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include "libft.h"
-
-# define RET_READL	1
-# define RET_EOF	0
-# define RET_ERROR	-1
-
-# define BUFF_SIZE	32
-# define FD_MAX		8192
-
-typedef struct s_buffer
+void	ft_putnbr_fd(int n, int fd)
 {
-	t_list	*buf;
-	t_bool	f_eof;
-}	t_buffer;
+	int		pow;
+	int		div;
+	t_bool	ltz;
 
-int	get_next_line(const int fd, char **line);
-
-#endif
+	ltz = n < 0;
+	write(fd, "-", ltz);
+	pow = ft_log10(n);
+	div = ft_pow(10, pow) * (1 | -ltz);
+	while (pow-- >= 0)
+	{
+		ft_putchar_fd((char)(n / div % 10 + '0'), fd);
+		div /= 10;
+	}
+}

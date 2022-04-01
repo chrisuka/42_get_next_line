@@ -1,0 +1,101 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_debugtools.h                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/23 16:32:14 by ikarjala          #+#    #+#             */
+/*   Updated: 2022/04/01 14:31:43 by ikarjala         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef FT_DEBUGTOOLS_H
+# define FT_DEBUGTOOLS_H
+
+# include <stdio.h>
+# include <limits.h>
+# include "libft.h"
+
+# ifndef DEBUG_G
+#  define DEBUG_G 1
+#  define VERBOSITY 2
+
+#  if DEBUG_G
+#   define FMEM_MAPC 5
+#   define C_NOPRINT '?'
+
+static inline char	*fmem(char *str, size_t size)
+{
+	char		*new;
+	char		*s;
+	char		*m_p;
+	const char	mapfr[FMEM_MAPC] = "\n\t\v\r\0";
+	const char	mapto[FMEM_MAPC] = "%\t^~0";
+
+	if (!str || !size)
+		return (NULL);
+	new = (char *)malloc(sizeof(char) * size + 1);
+	if (!new)
+		return (NULL);
+	new[size] = 0;
+	s = new;
+	while (size-- > 0)
+	{
+		m_p = ft_memchr(mapfr, *str, FMEM_MAPC);
+		if (m_p)
+			*s = mapto[m_p - mapfr];
+		else if (ft_isprint(*str))
+			*s = *str;
+		else
+			*s = C_NOPRINT;
+		s++;
+		str++;
+	}
+	return (new);
+}
+
+static inline void	print_mem(char *str, size_t len)
+{
+	char	*new;
+
+	if (!str || !len)
+		return ;
+	new = fmem(str, len);
+	if (!new)
+		return ;
+	ft_putstr(new);
+	ft_bzero(new, len);
+	free(new);
+	return ;
+}
+
+static inline void	printlst(t_list *lst)
+{
+	t_list	*buf;
+	size_t	i;
+	char	*cont;
+
+	i = 0;
+	buf = lst;
+	while (buf)
+	{
+		cont = fmem((char *)buf->content, buf->content_size);
+		printf("[N%lu](%lu): '%s' -> ", i, buf->content_size, cont);
+		ft_strdel(&cont);
+		i++;
+		buf = buf->next;
+	}
+	printf("[NULL]\n");
+	buf = lst;
+	while (i-- > 0)
+	{
+		printf("%p  -> ", buf);
+		buf = buf->next;
+	}
+	printf("0x0\n");
+}
+
+#  endif
+# endif
+#endif

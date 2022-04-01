@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 14:35:11 by ikarjala         ###   ########.fr       */
+/*   Created: 2021/11/10 18:49:38 by ikarjala          #+#    #+#             */
+/*   Updated: 2022/03/20 03:10:38 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include "libft.h"
-
-# define RET_READL	1
-# define RET_EOF	0
-# define RET_ERROR	-1
-
-# define BUFF_SIZE	32
-# define FD_MAX		8192
-
-typedef struct s_buffer
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	t_list	*buf;
-	t_bool	f_eof;
-}	t_buffer;
+	size_t	i;
 
-int	get_next_line(const int fd, char **line);
-
-#endif
+	if (dst == NULL && src == NULL)
+		return (NULL);
+	if (n == 0 || dst == src)
+		return (dst);
+	i = -1UL;
+	while (++i < n)
+		((unsigned char *)dst)[i] = ((unsigned char *)src)[i];
+	return (dst);
+}

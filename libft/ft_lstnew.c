@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 14:35:11 by ikarjala         ###   ########.fr       */
+/*   Created: 2021/12/01 14:09:03 by ikarjala          #+#    #+#             */
+/*   Updated: 2021/12/13 18:31:06 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include "libft.h"
-
-# define RET_READL	1
-# define RET_EOF	0
-# define RET_ERROR	-1
-
-# define BUFF_SIZE	32
-# define FD_MAX		8192
-
-typedef struct s_buffer
+t_list	*ft_lstnew(const void *content, size_t content_size)
 {
-	t_list	*buf;
-	t_bool	f_eof;
-}	t_buffer;
+	t_list	*new;
 
-int	get_next_line(const int fd, char **line);
-
-#endif
+	new = (t_list *)malloc(sizeof(t_list));
+	if (!new)
+		return (NULL);
+	if (!content)
+	{
+		new->content = NULL;
+		new->content_size = 0;
+	}
+	else
+	{
+		new->content = ft_memdup(content, content_size);
+		new->content_size = content_size;
+	}
+	new->next = NULL;
+	return (new);
+}

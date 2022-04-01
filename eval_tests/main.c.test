@@ -6,14 +6,65 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 00:36:01 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/02/21 17:48:04 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/01 14:28:58 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
+#include <stdio.h>
 #include "get_next_line.h"
+#include "ft_debugtools.h"
 
-#define DEBUG_BUILD 1
+#define DEBUG 1
+#define DEBUG_MEM 1
+
+#define FMEM_MAPC 5
+#define C_NOPRINT '?'
+
+#pragma region DEBUG_FUNC
+
+static void	printlines(int fd)
+{
+	char	*line;
+	size_t	lin;
+	int		ret;
+	char	*fstr;
+
+	lin = 0;
+	while (FT_TRUE)
+	{
+		ret = get_next_line(fd, &line);
+		#if DEBUG
+		switch (ret)
+		{
+			case RET_READL:
+				if (!line)
+					printf("line %lu : (empty)\n", lin);
+				else
+				{
+					fstr = fmem(line, ft_strlen(line));
+					printf("line %lu : '%s'\n", lin, fstr);
+					ft_strdel(&fstr);
+				}
+				break;
+			case RET_EOF:
+				printf("line %lu : EOF, exiting\n", lin);
+				break;
+			case RET_ERROR:
+				printf("line %lu : ERROR! aborting\n", lin);
+				break;
+			default:
+				printf("line %lu : UNRECOGNIZED EXIT CODE (%i), aborting\n", lin, ret);
+				break;
+		}
+		#endif
+		ft_strdel(&line);
+		if (ret != RET_READL)
+			return;
+		lin++;
+	}
+}
+#pragma endregion
 
 int	main(int argc, const char **argv)
 {
@@ -22,25 +73,26 @@ int	main(int argc, const char **argv)
 
 	fd = 0;
 	line = NULL;
+
 	if (argc < 2)
 	{
 		ft_putendl("STDIN: =====");
-		while (get_next_line(0, &line) == RET_READL)
-			ft_putendl(line);
-		ft_strdel(&line);
-		return (0);
+		printlines(0);
 	}
-	while (*++argv)
+	else while (argc-- > 1 && *++argv)
 	{
 		ft_putstr(*argv);
 		ft_putendl(": =====");
 		fd = open(*argv, O_RDONLY);
-		while (get_next_line(fd, &line) == RET_READL)
-			ft_putendl(line);
+		if (fd == -1)
+		{
+			ft_putendl("error opening file!");
+			continue ;
+		}
+		printlines(fd);
 		close(fd);
 	}
-	ft_strdel(&line);
-#if DEBUG_BUILD
+#if DEBUG_MEM
 	system("leaks gnl_test");
 #endif
 	return (0);

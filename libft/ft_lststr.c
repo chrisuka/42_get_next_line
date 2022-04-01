@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_lststr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 14:35:11 by ikarjala         ###   ########.fr       */
+/*   Created: 2022/03/23 19:31:49 by ikarjala          #+#    #+#             */
+/*   Updated: 2022/03/23 21:12:30 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include "libft.h"
-
-# define RET_READL	1
-# define RET_EOF	0
-# define RET_ERROR	-1
-
-# define BUFF_SIZE	32
-# define FD_MAX		8192
-
-typedef struct s_buffer
+char	*ft_lststr(t_list *lst)
 {
-	t_list	*buf;
-	t_bool	f_eof;
-}	t_buffer;
+	size_t	len;
+	char	*str;
 
-int	get_next_line(const int fd, char **line);
-
-#endif
+	len = ft_lstbuflen(lst);
+	if (len == 0)
+		return (NULL);
+	str = (char *)malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (NULL);
+	str[len] = 0;
+	len = 0;
+	while (lst)
+	{
+		ft_memmove(&(str[len]), lst->content, lst->content_size);
+		len += lst->content_size;
+		lst = lst->next;
+	}
+	return (str);
+}

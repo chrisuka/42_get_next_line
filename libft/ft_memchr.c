@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/21 17:46:50 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 14:35:11 by ikarjala         ###   ########.fr       */
+/*   Created: 2021/11/14 09:33:22 by ikarjala          #+#    #+#             */
+/*   Updated: 2022/03/24 16:34:33 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include "libft.h"
-
-# define RET_READL	1
-# define RET_EOF	0
-# define RET_ERROR	-1
-
-# define BUFF_SIZE	32
-# define FD_MAX		8192
-
-typedef struct s_buffer
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	t_list	*buf;
-	t_bool	f_eof;
-}	t_buffer;
+	unsigned char	*p;
 
-int	get_next_line(const int fd, char **line);
-
-#endif
+	p = (unsigned char *)s;
+	while (n-- > 0)
+	{
+		if (*p == (unsigned char)c)
+			return (p);
+		p++;
+	}
+	return (NULL);
+}
