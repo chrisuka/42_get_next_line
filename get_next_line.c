@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 18:45:23 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/03/31 23:11:52 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/01 16:21:47 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,16 @@ static inline t_bool	find_nl(t_list *node, void **nlpout)
 	return (*nlpout != NULL);
 }
 
+static inline t_bool	nukecheck(t_bool condition, t_buffer *buf, int fd)
+{
+	if (condition)
+	{
+		ft_lstdel(&buf[fd].buf, &ft_memclr);
+		buf[fd].f_eof = FT_FALSE;
+	}
+	return (condition);
+}
+
 int	get_next_line(const int fd, char **line)
 {
 	static t_buffer	bufs[FD_MAX];
@@ -67,37 +77,15 @@ int	get_next_line(const int fd, char **line)
 	while (!find_nl(node, &nlp) && node->content_size > 0)
 	{
 		node->next = addbuffer(fd, BUFF_SIZE, &rbytes, bufs);
+		if (nukecheck((!node->next || rbytes < 0), bufs, fd))
+			return (RET_ERROR);
 		node = node->next;
 	}
 	node = dupremainder(node, nlp);
 	*line = ft_lststr(bufs[fd].buf);
 	ft_lstdel(&bufs[fd].buf, &ft_memclr);
-	if (!*line && !node && bufs[fd].f_eof)
-	{
-		bufs[fd].f_eof = FT_FALSE;
+	if (nukecheck((!*line && !node && bufs[fd].f_eof), bufs, fd))
 		return (RET_EOF);
-	}
 	bufs[fd].buf = node;
 	return (RET_READL);
 }
-
-// FIX norme in this file (get_next_line is over 25 lines long) ["FIXED" LMAO]
-// REMOVE DEBUG [CHECK]
-
-// NOTE: might want to RET_ERROR if read fails		< ----
-// NOTE: libft might actually not be approved by moulinette as a submodule..		< ----
-
-// YOU FOOL REMOVE THE LICENSE and any other extra files FROM LIBFT OR YOU'RE TOAST!
-
-// TODO: submit !!
-
-// =========
-
-// NOTABLE ERRORS AFTER CHANGES:
-//	rbytes EOF check will be incorrect if we never call addbuffer
-//	if we dont call memchr twice nlp will be NULL and we call addbuffer when we should not
-//	buf will stay NULL if its NULL in the beginning
-
-// OTHER NOTES:
-//	we might not actually need nlp/tail to be static
-//	in which case we can get rid of buf struct and use t_list *[] instead
