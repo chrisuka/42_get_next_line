@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/04/01 16:09:38 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/04/01 22:08:47 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ ft_putchar_fd ft_putchar \
 ft_putstr_fd ft_putstr ft_putendl_fd ft_putendl \
 ft_putnbr ft_putnbr_fd \
 ft_putstr_fd ft_putstr \
+ft_memalloc ft_strnew \
 \
 ft_bzero ft_memset \
 ft_memchr \

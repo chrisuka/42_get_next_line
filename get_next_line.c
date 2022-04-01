@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 18:45:23 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 21:20:13 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/01 22:14:21 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	get_next_line(const int fd, char **line)
 	node = dupremainder(node, nlp);
 	*line = ft_lststr(bufs[fd].buf);
 	ft_lstdel(&bufs[fd].buf, &ft_memclr);
-	if (nukecheck((!*line && !node && bufs[fd].f_eof && !nlp), bufs, fd))
+	if (nukecheck((!**line && !node && bufs[fd].f_eof && !nlp), bufs, fd))
 		return (RET_EOF);
 	bufs[fd].buf = node;
 	return (RET_READL);

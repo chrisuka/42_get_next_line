@@ -1,35 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lststr.c                                        :+:      :+:    :+:   */
+/*   ft_memalloc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/23 19:31:49 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 22:06:11 by ikarjala         ###   ########.fr       */
+/*   Created: 2021/11/16 19:21:41 by ikarjala          #+#    #+#             */
+/*   Updated: 2021/12/18 00:15:17 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_lststr(t_list *lst)
+void	*ft_memalloc(size_t size)
 {
-	size_t	len;
-	char	*str;
+	char	*ptr;
 
-	len = ft_lstbuflen(lst);
-	if (len == 0)
-		return (ft_strnew(0));
-	str = (char *)malloc(sizeof(char) * (len + 1));
-	if (!str)
+	if (size == 0)
 		return (NULL);
-	str[len] = 0;
-	len = 0;
-	while (lst)
-	{
-		ft_memmove(&(str[len]), lst->content, lst->content_size);
-		len += lst->content_size;
-		lst = lst->next;
-	}
-	return (str);
+	ptr = (char *)malloc(size);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, size);
+	return ((void *)ptr);
 }
