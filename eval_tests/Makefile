@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/04/01 15:38:43 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/04/01 19:21:30 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ get_next_line
 ROOT		= ../
 SRC_DIR		= $(ROOT)
 OBJ_DIR		= ./
-INC_DIR		= $(ROOT) $(LIB_DIR)
+INC_DIR		= $(ROOT)
 SRC			= $(addprefix $(SRC_DIR),$(addsuffix .c,$(CFUNC))) ./main.c
 OBJ			= $(addprefix $(OBJ_DIR),$(addsuffix .o,$(CFUNC))) ./main.o
 INC			= $(addprefix -I ,$(INC_DIR))

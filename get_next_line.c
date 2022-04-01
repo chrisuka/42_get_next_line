@@ -6,25 +6,28 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 18:45:23 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 16:21:47 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/01 20:40:04 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static t_list	*addbuffer(int fd, size_t size, ssize_t *rbytes, t_buffer *buf)
+static t_list	*addbuffer(int fd, t_buffer *buf)
 {
 	t_list	*new;
+	ssize_t	rbytes;
 	size_t	u_rb;
 
-	new = ft_lstinit(1, size);
+	new = ft_lstinit(1, BUFF_SIZE);
 	if (!new)
 		return (NULL);
-	*rbytes = read(fd, new->content, size);
-	u_rb = (size_t) * rbytes;
+	rbytes = read(fd, new->content, BUFF_SIZE);
+	if (rbytes < 0)
+		return (NULL);
+	u_rb = (size_t)rbytes;
 	buf[fd].f_eof = u_rb < BUFF_SIZE;
 	new->content_size = u_rb;
-	ft_bzero(&new->content[u_rb], size - u_rb);
+	ft_bzero(&new->content[u_rb], BUFF_SIZE - u_rb);
 	return (new);
 }
 
@@ -67,17 +70,18 @@ int	get_next_line(const int fd, char **line)
 	static t_buffer	bufs[FD_MAX];
 	t_list			*node;
 	void			*nlp;
-	ssize_t			rbytes;
 
 	if (!line || fd < 0 || !BUFF_SIZE || fd > FD_MAX)
 		return (RET_ERROR);
 	if (!bufs[fd].buf)
-		bufs[fd].buf = addbuffer(fd, BUFF_SIZE, &rbytes, bufs);
+		bufs[fd].buf = addbuffer(fd, bufs);
+	if (nukecheck(!bufs[fd].buf, bufs, fd))
+		return (RET_ERROR);
 	node = bufs[fd].buf;
 	while (!find_nl(node, &nlp) && node->content_size > 0)
 	{
-		node->next = addbuffer(fd, BUFF_SIZE, &rbytes, bufs);
-		if (nukecheck((!node->next || rbytes < 0), bufs, fd))
+		node->next = addbuffer(fd, bufs);
+		if (nukecheck(!node->next, bufs, fd))
 			return (RET_ERROR);
 		node = node->next;
 	}
