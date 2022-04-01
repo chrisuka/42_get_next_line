@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 16:32:14 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 14:31:43 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/01 20:48:26 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stdio.h>
 # include <limits.h>
-# include "libft.h"
+# include "libft/libft.h"
 
 # ifndef DEBUG_G
 #  define DEBUG_G 1
