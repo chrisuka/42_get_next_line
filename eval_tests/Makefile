@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/03/30 22:11:36 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/04/01 15:38:43 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,3 +59,7 @@ test: fclean
 norme:
 	norminette -R CheckForbiddenSourceHeader \
 	$(ROOT)get_next_line.c $(ROOT)get_next_line.h
+
+unpack:
+	ln -f ft_debugtools.h.test ft_debugtools.h
+	ln -f main.c.test main.c

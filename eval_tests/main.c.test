@@ -6,49 +6,22 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 00:36:01 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/03/31 17:02:10 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/01 14:28:58 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include <stdio.h>
 #include "get_next_line.h"
+#include "ft_debugtools.h"
 
-#define DEBUG_BUILD 1
+#define DEBUG 1
+#define DEBUG_MEM 1
 
 #define FMEM_MAPC 5
 #define C_NOPRINT '?'
 
 #pragma region DEBUG_FUNC
-static inline char	*fmem(char *str, size_t size)
-{
-	char		*new;
-	char		*s;
-	char		*m_p;
-	const char	mapfr[FMEM_MAPC] = "\n\t\v\r\0";
-	const char	mapto[FMEM_MAPC] = "%\t^~0";
-
-	if (!str || !size)
-		return (NULL);
-	new = (char *)malloc(sizeof(char) * size + 1);
-	if (!new)
-		return (NULL);
-	new[size] = 0;
-	s = new;
-	while (size-- > 0)
-	{
-		m_p = ft_memchr(mapfr, *str, FMEM_MAPC);
-		if (m_p)
-			*s = mapto[m_p - mapfr];
-		else if (ft_isprint(*str))
-			*s = *str;
-		else
-			*s = C_NOPRINT;
-		s++;
-		str++;
-	}
-	return (new);
-}
 
 static void	printlines(int fd)
 {
@@ -61,6 +34,7 @@ static void	printlines(int fd)
 	while (FT_TRUE)
 	{
 		ret = get_next_line(fd, &line);
+		#if DEBUG
 		switch (ret)
 		{
 			case RET_READL:
@@ -83,6 +57,7 @@ static void	printlines(int fd)
 				printf("line %lu : UNRECOGNIZED EXIT CODE (%i), aborting\n", lin, ret);
 				break;
 		}
+		#endif
 		ft_strdel(&line);
 		if (ret != RET_READL)
 			return;
@@ -117,7 +92,7 @@ int	main(int argc, const char **argv)
 		printlines(fd);
 		close(fd);
 	}
-#if DEBUG_BUILD
+#if DEBUG_MEM
 	system("leaks gnl_test");
 #endif
 	return (0);
