@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/04/01 19:21:30 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/04/02 19:47:03 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,8 @@ endif
 	@echo 'Build success!'
 clean:
 	rm -f $(OBJ)
+lclean:
+	make -C $(LIB_DIR) fclean
 fclean: clean
 	rm -f $(BIN)
 re: fclean all

@@ -6,7 +6,7 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 19:31:49 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 22:06:11 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/02 19:54:54 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ char	*ft_lststr(t_list *lst)
 	char	*str;
 
 	len = ft_lstbuflen(lst);
-	if (len == 0)
-		return (ft_strnew(0));
 	str = (char *)malloc(sizeof(char) * (len + 1));
 	if (!str)
 		return (NULL);
 	str[len] = 0;
+	if (len == 0)
+		return (str);
 	len = 0;
 	while (lst)
 	{
