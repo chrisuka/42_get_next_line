@@ -6,7 +6,7 @@
 #    By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/05 16:57:32 by ikarjala          #+#    #+#              #
-#    Updated: 2022/04/02 19:47:03 by ikarjala         ###   ########.fr        #
+#    Updated: 2022/04/05 16:50:58 by ikarjala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ LIB			= ft
 FLAGS		= -Wall -Wextra -Werror -Wimplicit -Wconversion -ggdb
 CC			= clang
 
+CMD_NORME	= norminette -R CheckForbiddenSourceHeader
 42TEST		= 42filechecker
 
 ## BUILD	====
@@ -59,8 +60,8 @@ test: fclean
 	bash $(42TEST)
 ## UTILS	====
 norme:
-	norminette -R CheckForbiddenSourceHeader \
-	$(ROOT)get_next_line.c $(ROOT)get_next_line.h
+	$(CMD_NORME) $(ROOT)get_next_line.c $(ROOT)get_next_line.h
+	$(CMD_NORME) $(LIB_DIR)/*.c $(LIB_DIR)/libft.h
 
 unpack:
 	ln -f ft_debugtools.h.test ft_debugtools.h
