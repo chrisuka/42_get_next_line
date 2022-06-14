@@ -6,13 +6,15 @@
 /*   By: ikarjala <ikarjala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 18:45:23 by ikarjala          #+#    #+#             */
-/*   Updated: 2022/04/01 22:14:21 by ikarjala         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:57:21 by ikarjala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static t_list	*addbuffer(int fd, t_buffer *buf)
+#include "eval_tests/ft_debugtools.h"
+
+static t_list *addbuffer(int fd, t_buffer *buf)
 {
 	t_list	*new;
 	ssize_t	rbytes;
@@ -34,65 +36,82 @@ static t_list	*addbuffer(int fd, t_buffer *buf)
 	return (new);
 }
 
-static t_list	*dupremainder(t_list *node, void *nlp)
-{
-	size_t	nli;
-	t_list	*tmp;
-
-	nli = 0;
-	if (node->content_size > 0)
-		nli = (size_t)(nlp - node->content);
-	tmp = NULL;
-	if (nli + 1 < node->content_size)
-	{
-		tmp = ft_lstnew(&nlp[1], node->content_size - nli - 1);
-		ft_bzero(nlp, node->content_size - nli);
-	}
-	node->content_size = nli;
-	return (tmp);
-}
-
-static inline t_bool	find_nl(t_list *node, void **nlpout)
-{
-	*nlpout = ft_memchr(node->content, '\n', node->content_size);
-	return (*nlpout != NULL);
-}
-
 static inline t_bool	nukecheck(t_bool condition, t_buffer *buf, int fd)
 {
 	if (condition)
 	{
 		ft_lstdel(&buf[fd].buf, &ft_memclr);
+		buf[fd].nlp = NULL;
 		buf[fd].f_eof = FT_FALSE;
 	}
 	return (condition);
+}
+
+static t_list	*getlinep(t_list *node, void *beg, void *end)
+{
+	t_list	*new;
+
+	if (!beg)
+		beg = node->content;
+	if (!end)
+		end = &node->content[node->content_size - 1];
+	if (beg >= end)
+		return (NULL);
+	new = (t_list *)malloc(sizeof(t_list));
+	if (!new)
+		return (NULL);
+	new->content = beg;
+	new->content_size = (size_t)(end - beg);
+	new->next = NULL;
+	return (new);
+}
+
+static inline t_bool	find_nl(t_list *node, void **nlp_o)
+{
+	if (!*nlp_o)
+		*nlp_o = node->content;
+	*nlp_o = ft_memchr(*nlp_o, '\n', node->content_size);
+	return (*nlp_o != NULL);
 }
 
 int	get_next_line(const int fd, char **line)
 {
 	static t_buffer	bufs[FD_MAX];
 	t_list			*node;
+	t_list			*tmp;
 	void			*nlp;
 
-	if (!line || fd < 0 || !BUFF_SIZE || fd > FD_MAX)
+	if (nukecheck(!line || fd < 0 || !BUFF_SIZE || fd > FD_MAX, bufs, fd))
 		return (RET_ERROR);
+	nlp = bufs[fd].nlp;
 	if (!bufs[fd].buf)
 		bufs[fd].buf = addbuffer(fd, bufs);
 	if (nukecheck(!bufs[fd].buf, bufs, fd))
 		return (RET_ERROR);
 	node = bufs[fd].buf;
-	while (!find_nl(node, &nlp) && node->content_size > 0)
+
+	if (nlp && nlp > node->content && nlp + 1 < &node->content[node->content_size])
+		bufs[fd].buf = getlinep(node, nlp, bufs[fd].nlp);
+
+	while (!find_nl(node, &bufs[fd].nlp) && !bufs[fd].f_eof)
 	{
 		node->next = addbuffer(fd, bufs);
 		if (nukecheck(!node->next, bufs, fd))
 			return (RET_ERROR);
+		tmp = node;
 		node = node->next;
 	}
-	node = dupremainder(node, nlp);
+
+	tmp->next = getlinep(node, nlp, bufs[fd].nlp);
 	*line = ft_lststr(bufs[fd].buf);
+
+	printlst(bufs[fd].buf);
+	tmp->next->content = NULL;
 	ft_lstdel(&bufs[fd].buf, &ft_memclr);
-	if (nukecheck((!**line && !node && bufs[fd].f_eof && !nlp), bufs, fd))
+
+	if (nukecheck((!**line && !node && bufs[fd].f_eof && !bufs[fd].nlp), bufs, fd)) //NORME
 		return (RET_EOF);
 	bufs[fd].buf = node;
+	bufs[fd].nlp++;
 	return (RET_READL);
 }
