@@ -13,7 +13,7 @@ The user is expected to supply
 a valid file descriptor and address of a string, as well as take care of freeing it after each call.
 
 Minimal example:
-```
+```C
 int gnl_code;
 while ((gnl_code = get_next_line (fd, &str)) == RET_READL)
 {
